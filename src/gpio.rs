@@ -90,6 +90,8 @@ pub(crate) mod marker {
     pub trait IntoAf<const A: u8> {}
 }
 
+impl marker::Active for Input {}
+
 /// GPIO Pin drive strength
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 #[cfg_attr(feature = "defmt", derive(defmt::Format))]
