@@ -90,6 +90,8 @@ pub(crate) mod marker {
     pub trait IntoAf<const A: u8> {}
 }
 
+impl marker::Readable for Input {}
+impl marker::Readable for Output<OpenDrain> {}
 impl marker::Active for Input {}
 
 /// GPIO Pin drive strength
