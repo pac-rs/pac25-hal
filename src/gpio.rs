@@ -1,9 +1,7 @@
-use crate::hal::digital::v2::OutputPin;
 use crate::hal::digital::v2::PinState;
 use core::fmt;
 use core::marker::PhantomData;
 mod convert;
-use convert::PinMode;
 
 pub use Input as DefaultMode;
 
