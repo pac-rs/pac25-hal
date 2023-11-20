@@ -19,9 +19,10 @@ targets = ["thumbv7em-none-eabihf"]
 rustc-args = ["--cfg", "docsrs"]
 
 [features]
+device-selected = []
 
 # Device features
-pac25140 = ["pac25/pac25140", "gpiod", "gpioe", "gpiof", "gpiog"]
+pac25140 = ["pac25/pac25140", "device-selected", "gpiod", "gpioe", "gpiof", "gpiog"]
 
 # Peripheral features
 gpioa = []
