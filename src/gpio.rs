@@ -170,6 +170,79 @@ impl<const P: char, const N: u8, MODE> PinExt for Pin<P, N, MODE> {
     }
 }
 
+pub trait PinPull: Sized {
+    /// Set the internal pull-up and pull-down resistor
+    fn set_internal_resistor(&mut self, resistor: Pull);
+
+    #[inline(always)]
+    fn internal_resistor(mut self, resistor: Pull) -> Self {
+        self.set_internal_resistor(resistor);
+        self
+    }
+}
+
+impl<const P: char, const N: u8, MODE> PinPull for Pin<P, N, MODE>
+where
+    MODE: marker::Active,
+{
+    #[inline(always)]
+    fn set_internal_resistor(&mut self, resistor: Pull) {
+        self.set_internal_resistor(resistor)
+    }
+}
+
+impl<const P: char, const N: u8, MODE> Pin<P, N, MODE>
+where
+    MODE: marker::Active,
+{
+    /// Set the internal pull-up and pull-down resistor
+    pub fn set_internal_resistor(&mut self, resistor: Pull) {
+        let offset = N;
+
+        // for safety reasons we need to ensure the pull-up and pull-down are
+        // not activated at the same time.
+
+        unsafe {
+            (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits((r.bits() & !(1 << offset))));
+            (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits((r.bits() & !(1 << offset))));
+
+            match resistor {
+                Pull::Up => {
+                    (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits((r.bits() | (1 << offset))))
+                }
+                Pull::Down => {
+                    (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits((r.bits() | (1 << offset))))
+                }
+                Pull::None => {},
+            }
+        }
+    }
+
+    /// Set the internal pull-up and pull-down resistor
+    pub fn internal_resistor(mut self, resistor: Pull) -> Self {
+        self.set_internal_resistor(resistor);
+        self
+    }
+
+    /// Enables / disables the internal pull up
+    pub fn internal_pull_up(self, on: bool) -> Self {
+        if on {
+            self.internal_resistor(Pull::Up)
+        } else {
+            self.internal_resistor(Pull::None)
+        }
+    }
+
+    /// Enables / disables the internal pull down
+    pub fn internal_pull_down(self, on: bool) -> Self {
+        if on {
+            self.internal_resistor(Pull::Down)
+        } else {
+            self.internal_resistor(Pull::None)
+        }
+    }
+}
+
 impl<const P: char, const N: u8, MODE> Pin<P, N, MODE> {
     /// Set the output of the pin regardless of its mode.
     /// Primarily used to set the output value of the pin
@@ -368,6 +441,72 @@ impl<const P: char> Gpio<P> {
             #[cfg(feature = "gpiog")]
             'G' => crate::pac::GPIOG::ptr() as _,
             _ => panic!("Unknown GPIO port"),
+        }
+    }
+
+    fn scc_muxsel_ptr() -> *const crate::pac::scc::PAMUXSEL {
+        unsafe {
+            match P {
+                #[cfg(feature = "gpioa")]
+                'A' => (*crate::pac::SCC::ptr()).pamuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpiob")]
+                'B' => (*crate::pac::SCC::ptr()).pbmuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpioc")]
+                'C' => (*crate::pac::SCC::ptr()).pcmuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpiod")]
+                'D' => (*crate::pac::SCC::ptr()).pdmuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpioe")]
+                'E' => (*crate::pac::SCC::ptr()).pemuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpiof")]
+                'F' => (*crate::pac::SCC::ptr()).pfmuxsel.as_ptr() as *const _,
+                #[cfg(feature = "gpiog")]
+                'G' => (*crate::pac::SCC::ptr()).pgmuxsel.as_ptr() as *const _,
+                _ => panic!("Unknown GPIO port"),
+            }
+        }
+    }
+
+    fn scc_puen_ptr() -> *const crate::pac::scc::PAPUEN {
+        unsafe {
+            match P {
+                #[cfg(feature = "gpioa")]
+                'A' => (*crate::pac::SCC::ptr()).papuen.as_ptr() as *const _,
+                #[cfg(feature = "gpiob")]
+                'B' => (*crate::pac::SCC::ptr()).pbpuen.as_ptr() as *const _,
+                #[cfg(feature = "gpioc")]
+                'C' => (*crate::pac::SCC::ptr()).pcpuen.as_ptr() as *const _,
+                #[cfg(feature = "gpiod")]
+                'D' => (*crate::pac::SCC::ptr()).pdpuen.as_ptr() as *const _,
+                #[cfg(feature = "gpioe")]
+                'E' => (*crate::pac::SCC::ptr()).pepuen.as_ptr() as *const _,
+                #[cfg(feature = "gpiof")]
+                'F' => (*crate::pac::SCC::ptr()).pfpuen.as_ptr() as *const _,
+                #[cfg(feature = "gpiog")]
+                'G' => (*crate::pac::SCC::ptr()).pgpuen.as_ptr() as *const _,
+                _ => panic!("Unknown GPIO port"),
+            }
+        }
+    }
+
+    fn scc_pden_ptr() -> *const crate::pac::scc::PAPDEN {
+        unsafe {
+            match P {
+                #[cfg(feature = "gpioa")]
+                'A' => (*crate::pac::SCC::ptr()).papden.as_ptr() as *const _,
+                #[cfg(feature = "gpiob")]
+                'B' => (*crate::pac::SCC::ptr()).pbpden.as_ptr() as *const _,
+                #[cfg(feature = "gpioc")]
+                'C' => (*crate::pac::SCC::ptr()).pcpden.as_ptr() as *const _,
+                #[cfg(feature = "gpiod")]
+                'D' => (*crate::pac::SCC::ptr()).pdpden.as_ptr() as *const _,
+                #[cfg(feature = "gpioe")]
+                'E' => (*crate::pac::SCC::ptr()).pepden.as_ptr() as *const _,
+                #[cfg(feature = "gpiof")]
+                'F' => (*crate::pac::SCC::ptr()).pfpden.as_ptr() as *const _,
+                #[cfg(feature = "gpiog")]
+                'G' => (*crate::pac::SCC::ptr()).pgpden.as_ptr() as *const _,
+                _ => panic!("Unknown GPIO port"),
+            }
         }
     }
 }
