@@ -90,9 +90,19 @@ pub(crate) mod marker {
     pub trait IntoAf<const A: u8> {}
 }
 
+impl<MODE> marker::Interruptible for Output<MODE> {}
+impl marker::Interruptible for Input {}
 impl marker::Readable for Input {}
 impl marker::Readable for Output<OpenDrain> {}
+impl<const A: u8, Otype> marker::Interruptible for Alternate<A, Otype> {}
+impl<const A: u8, Otype> marker::Readable for Alternate<A, Otype> {}
 impl marker::Active for Input {}
+impl<Otype> marker::OutputSpeed for Output<Otype> {}
+impl<const A: u8, Otype> marker::OutputSpeed for Alternate<A, Otype> {}
+impl<Otype> marker::Active for Output<Otype> {}
+impl<const A: u8, Otype> marker::Active for Alternate<A, Otype> {}
+impl marker::NotAlt for Input {}
+impl<Otype> marker::NotAlt for Output<Otype> {}
 
 /// GPIO Pin drive strength
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
