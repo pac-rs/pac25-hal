@@ -203,15 +203,15 @@ where
         // not activated at the same time.
 
         unsafe {
-            (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits((r.bits() & !(1 << offset))));
-            (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits((r.bits() & !(1 << offset))));
+            (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits(r.bits() & !(1 << offset)));
+            (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits(r.bits() & !(1 << offset)));
 
             match resistor {
                 Pull::Up => {
-                    (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits((r.bits() | (1 << offset))))
+                    (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)))
                 }
                 Pull::Down => {
-                    (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits((r.bits() | (1 << offset))))
+                    (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)))
                 }
                 Pull::None => {},
             }
