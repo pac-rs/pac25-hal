@@ -10,6 +10,8 @@ pub use pac25::pac25140 as pac;
 pub mod gpio;
 #[cfg(feature = "device-selected")]
 pub mod prelude;
+#[cfg(feature = "device-selected")]
+pub mod time;
 
 #[cfg(feature = "device-selected")]
 mod sealed {
