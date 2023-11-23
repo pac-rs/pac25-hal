@@ -7,6 +7,8 @@ pub use embedded_hal as hal;
 pub use pac25::pac25140 as pac;
 
 #[cfg(feature = "device-selected")]
+pub mod crc;
+#[cfg(feature = "device-selected")]
 pub mod gpio;
 #[cfg(feature = "device-selected")]
 pub mod prelude;
