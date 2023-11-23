@@ -25,7 +25,7 @@ impl Crc {
     /// Creates a new `Crc` peripheral instance.
     pub fn new(crc: CRC, poly: Polynomial, width: DataWidth) -> Self {
         // configure crc type
-        crc.ctl.write(|w| unsafe {
+        crc.ctl.modify(|_, w| unsafe {
             w.polysel()
                 .bits(poly as u8)
                 .datawidth()
@@ -40,7 +40,7 @@ impl Crc {
     /// In any CRC-16 configuration, the seed will be sourced from bits 0:15.
     /// In the CRC-8 configuration, the seed will be sourced from bits 0:7.
     pub fn seed(&self, seed: u16) {
-        self.crc.seed.write(|w| unsafe { w.value().bits(seed) })
+        self.crc.seed.modify(|_, w| unsafe { w.value().bits(seed) })
     }
 
     /// Return ownership of the peripheral.
