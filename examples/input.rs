@@ -6,7 +6,7 @@
 use cortex_m_rt::entry;
 use defmt_rtt as _;
 use pac25_hal as hal;
-use panic_halt as _;
+use panic_probe as _;
 
 use hal::pac;
 use hal::prelude::*;
