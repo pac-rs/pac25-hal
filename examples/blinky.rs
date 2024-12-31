@@ -13,14 +13,14 @@ use hal::prelude::*;
 
 #[entry]
 fn main() -> ! {
-    defmt::println!("Starting Blinky!");
+    defmt::info!("Starting Blinky!");
 
     let dp = pac::Peripherals::take().unwrap();
     let gpiod = dp.GPIOD.split();
     let mut led = gpiod.pd4.into_push_pull_output();
 
     loop {
-        defmt::println!("Blink!");
+        defmt::info!("Blink!");
 
         if led.is_set_high() {
             led.set_low()
