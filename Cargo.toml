@@ -23,6 +23,9 @@ device-selected = []
 pac25140 = [
     "pac25/pac25140",
     "device-selected",
+    "gpioa",
+    "gpiob",
+    "gpioc",
     "gpiod",
     "gpioe",
     "gpiof",

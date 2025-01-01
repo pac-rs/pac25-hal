@@ -3,6 +3,35 @@ use super::*;
 pub use super::Input as DefaultMode;
 
 #[cfg(feature = "pac25140")]
+gpio!(GPIOA, gpioa, PA, 'A', PAn, [
+    PA0: (pa0, 0, [0]),
+    PA1: (pa1, 1, [0, 1]),
+    PA2: (pa2, 2, [0, 1]),
+    PA3: (pa3, 3, [0, 1, 2]),
+    PA4: (pa4, 4, [0, 1, 2]),
+    PA5: (pa5, 5, [0, 1, 2]),
+    PA6: (pa6, 6, [0, 1, 2]),
+    PA7: (pa7, 7, [0]),
+]);
+
+#[cfg(feature = "pac25140")]
+gpio!(GPIOB, gpiob, PB, 'B', PBn, [
+    PB0: (pb0, 0, [0, 1, 2]),
+    PB1: (pb1, 1, [0, 1, 2]),
+    PB2: (pb2, 2, [0, 1, 2]),
+    PB3: (pb3, 3, [0, 1, 2]),
+    PB4: (pb4, 4, [0, 1, 2]),
+    PB5: (pb5, 5, [0, 1, 2]),
+    PB6: (pb6, 6, [0, 1, 2]),
+]);
+
+#[cfg(feature = "pac25140")]
+gpio!(GPIOC, gpioc, PC, 'C', PCn, [
+    PC4: (pc4, 4, [0, 1, 2, 3, 4, 5, 6, 7]),
+    PC5: (pc5, 5, [0, 1, 2, 3, 4, 5, 6, 7]),
+]);
+
+#[cfg(feature = "pac25140")]
 gpio!(GPIOD, gpiod, PD, 'D', PDn, [
     PD0: (pd0, 0, [0, 1, 2, 3, 5, 6, 7]),
     PD1: (pd1, 1, [0, 1, 2, 3, 5, 6, 7]),
