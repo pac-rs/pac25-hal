@@ -222,12 +222,12 @@ where
 
             match resistor {
                 Pull::Up => {
-                    (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)))
+                    (*Gpio::<P>::scc_puen_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)));
                 }
                 Pull::Down => {
-                    (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)))
+                    (*Gpio::<P>::scc_pden_ptr()).modify(|r, w| w.bits(r.bits() | (1 << offset)));
                 }
-                Pull::None => {},
+                Pull::None => {}
             }
         }
     }
@@ -272,22 +272,26 @@ impl<const P: char, const N: u8, MODE> Pin<P, N, MODE> {
     #[inline(always)]
     fn _set_high(&mut self) {
         // NOTE(unsafe) atomic write to a stateless register
-        unsafe { (*Gpio::<P>::ptr()).doset.write(|w| w.bits(1 << N)) }
+        unsafe {
+            (*Gpio::<P>::ptr()).doset().write(|w| w.bits(1 << N));
+        }
     }
     #[inline(always)]
     fn _set_low(&mut self) {
         // NOTE(unsafe) atomic write to a stateless register
-        unsafe { (*Gpio::<P>::ptr()).doclear.write(|w| w.bits(1 << N)) }
+        unsafe {
+            (*Gpio::<P>::ptr()).doclear().write(|w| w.bits(1 << N));
+        }
     }
     #[inline(always)]
     fn _is_set_low(&self) -> bool {
         // NOTE(unsafe) atomic read with no side effects
-        unsafe { (*Gpio::<P>::ptr()).out.read().bits() & (1 << N) == 0 }
+        unsafe { (*Gpio::<P>::ptr()).out().read().bits() & (1 << N) == 0 }
     }
     #[inline(always)]
     fn _is_low(&self) -> bool {
         // NOTE(unsafe) atomic read with no side effects
-        unsafe { (*Gpio::<P>::ptr()).in_.read().bits() & (1 << N) == 0 }
+        unsafe { (*Gpio::<P>::ptr()).in_().read().bits() & (1 << N) == 0 }
     }
 }
 
@@ -462,19 +466,19 @@ impl<const P: char> Gpio<P> {
         unsafe {
             match P {
                 #[cfg(feature = "gpioa")]
-                'A' => (*crate::pac::SCC::ptr()).pamuxsel.as_ptr() as *const _,
+                'A' => (*crate::pac::SCC::ptr()).pamuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpiob")]
-                'B' => (*crate::pac::SCC::ptr()).pbmuxsel.as_ptr() as *const _,
+                'B' => (*crate::pac::SCC::ptr()).pbmuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpioc")]
-                'C' => (*crate::pac::SCC::ptr()).pcmuxsel.as_ptr() as *const _,
+                'C' => (*crate::pac::SCC::ptr()).pcmuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpiod")]
-                'D' => (*crate::pac::SCC::ptr()).pdmuxsel.as_ptr() as *const _,
+                'D' => (*crate::pac::SCC::ptr()).pdmuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpioe")]
-                'E' => (*crate::pac::SCC::ptr()).pemuxsel.as_ptr() as *const _,
+                'E' => (*crate::pac::SCC::ptr()).pemuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpiof")]
-                'F' => (*crate::pac::SCC::ptr()).pfmuxsel.as_ptr() as *const _,
+                'F' => (*crate::pac::SCC::ptr()).pfmuxsel().as_ptr() as *const _,
                 #[cfg(feature = "gpiog")]
-                'G' => (*crate::pac::SCC::ptr()).pgmuxsel.as_ptr() as *const _,
+                'G' => (*crate::pac::SCC::ptr()).pgmuxsel().as_ptr() as *const _,
                 _ => panic!("Unknown GPIO port"),
             }
         }
@@ -484,19 +488,19 @@ impl<const P: char> Gpio<P> {
         unsafe {
             match P {
                 #[cfg(feature = "gpioa")]
-                'A' => (*crate::pac::SCC::ptr()).papuen.as_ptr() as *const _,
+                'A' => (*crate::pac::SCC::ptr()).papuen().as_ptr() as *const _,
                 #[cfg(feature = "gpiob")]
-                'B' => (*crate::pac::SCC::ptr()).pbpuen.as_ptr() as *const _,
+                'B' => (*crate::pac::SCC::ptr()).pbpuen().as_ptr() as *const _,
                 #[cfg(feature = "gpioc")]
-                'C' => (*crate::pac::SCC::ptr()).pcpuen.as_ptr() as *const _,
+                'C' => (*crate::pac::SCC::ptr()).pcpuen().as_ptr() as *const _,
                 #[cfg(feature = "gpiod")]
-                'D' => (*crate::pac::SCC::ptr()).pdpuen.as_ptr() as *const _,
+                'D' => (*crate::pac::SCC::ptr()).pdpuen().as_ptr() as *const _,
                 #[cfg(feature = "gpioe")]
-                'E' => (*crate::pac::SCC::ptr()).pepuen.as_ptr() as *const _,
+                'E' => (*crate::pac::SCC::ptr()).pepuen().as_ptr() as *const _,
                 #[cfg(feature = "gpiof")]
-                'F' => (*crate::pac::SCC::ptr()).pfpuen.as_ptr() as *const _,
+                'F' => (*crate::pac::SCC::ptr()).pfpuen().as_ptr() as *const _,
                 #[cfg(feature = "gpiog")]
-                'G' => (*crate::pac::SCC::ptr()).pgpuen.as_ptr() as *const _,
+                'G' => (*crate::pac::SCC::ptr()).pgpuen().as_ptr() as *const _,
                 _ => panic!("Unknown GPIO port"),
             }
         }
@@ -506,19 +510,19 @@ impl<const P: char> Gpio<P> {
         unsafe {
             match P {
                 #[cfg(feature = "gpioa")]
-                'A' => (*crate::pac::SCC::ptr()).papden.as_ptr() as *const _,
+                'A' => (*crate::pac::SCC::ptr()).papden().as_ptr() as *const _,
                 #[cfg(feature = "gpiob")]
-                'B' => (*crate::pac::SCC::ptr()).pbpden.as_ptr() as *const _,
+                'B' => (*crate::pac::SCC::ptr()).pbpden().as_ptr() as *const _,
                 #[cfg(feature = "gpioc")]
-                'C' => (*crate::pac::SCC::ptr()).pcpden.as_ptr() as *const _,
+                'C' => (*crate::pac::SCC::ptr()).pcpden().as_ptr() as *const _,
                 #[cfg(feature = "gpiod")]
-                'D' => (*crate::pac::SCC::ptr()).pdpden.as_ptr() as *const _,
+                'D' => (*crate::pac::SCC::ptr()).pdpden().as_ptr() as *const _,
                 #[cfg(feature = "gpioe")]
-                'E' => (*crate::pac::SCC::ptr()).pepden.as_ptr() as *const _,
+                'E' => (*crate::pac::SCC::ptr()).pepden().as_ptr() as *const _,
                 #[cfg(feature = "gpiof")]
-                'F' => (*crate::pac::SCC::ptr()).pfpden.as_ptr() as *const _,
+                'F' => (*crate::pac::SCC::ptr()).pfpden().as_ptr() as *const _,
                 #[cfg(feature = "gpiog")]
-                'G' => (*crate::pac::SCC::ptr()).pgpden.as_ptr() as *const _,
+                'G' => (*crate::pac::SCC::ptr()).pgpden().as_ptr() as *const _,
                 _ => panic!("Unknown GPIO port"),
             }
         }

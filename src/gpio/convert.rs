@@ -77,7 +77,7 @@ macro_rules! change_mode {
         unsafe {
             if MODE::MODE != M::MODE {
                 $block
-                    .mode
+                    .mode()
                     .modify(|r, w| w.bits((r.bits() & !(0b11 << offset)) | (M::MODE << offset)));
             }
         }

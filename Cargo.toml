@@ -9,7 +9,7 @@ edition = "2021"
 defmt = { version = "0.3.5", optional = true }
 embedded-hal = { version = "0.2.7", features = ["unproven"] }
 fugit = "0.3.7"
-pac25 = { version = "0.1.1", features = ["pac25140"] }
+pac25 = { version = "0.1.2", features = ["pac25140"] }
 
 [package.metadata.docs.rs]
 features = ["pac25140", "rt", "critical-section"]

@@ -1,9 +1,9 @@
+use crate::pac::usarta::lcr::{PSEL, SBS, WLS};
 use crate::time::{Bps, U32Ext};
-use crate::pac::usarta::lcr::{PSEL_A, SBS_A, WLS_A};
 
-pub type Parity = PSEL_A;
-pub type StopBits = SBS_A;
-pub type WordLength = WLS_A;
+pub type Parity = PSEL;
+pub type StopBits = SBS;
+pub type WordLength = WLS;
 
 pub struct Config {
     baudrate: Bps,
