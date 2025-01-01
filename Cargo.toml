@@ -47,3 +47,7 @@ cortex-m-rt = "0.7.3"
 defmt = "0.3.5"
 defmt-rtt = "0.4.0"
 panic-probe = "0.3.1"
+
+[[example]]
+name = "blinky"
+required-features = ["defmt"]
