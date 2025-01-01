@@ -39,7 +39,7 @@ gpiof = []
 gpiog = []
 
 # Optional extras
-defmt = ["dep:defmt"]
+defmt = ["dep:defmt", "fugit/defmt"]
 
 [dev-dependencies]
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }

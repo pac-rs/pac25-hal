@@ -6,6 +6,9 @@
 use cortex_m_rt::entry;
 use defmt_rtt as _;
 use pac25_hal as hal;
+use pac25_hal::scc::{
+    ClockSource, Config, HClockPrescaler, PllConfig, PllOutPrescaler, SystemClock,
+};
 use panic_probe as _;
 
 use hal::pac;
@@ -19,16 +22,24 @@ fn main() -> ! {
     let gpiod = dp.GPIOD.split();
     let mut led = gpiod.pd4.into_push_pull_output();
 
+    // Set the system clock to 150MHz
+    let scc = dp.SCC.freeze(
+        Config::default()
+            .frclk(ClockSource::RefClock)
+            .sclk(SystemClock::PLLCLK)
+            .pll(
+                PllConfig::default()
+                    .enabled(true)
+                    .indiv(1)
+                    .fbdiv(75)
+                    .outdiv(PllOutPrescaler::Div2),
+            ),
+    );
+
     loop {
-        defmt::info!("Blink!");
+        led.toggle();
 
-        if led.is_set_high() {
-            led.set_low()
-        } else {
-            led.set_high()
-        }
-
-        for _ in 0..5_000 {
+        for _ in 0..100_000 {
             continue;
         }
     }
