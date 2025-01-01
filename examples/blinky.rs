@@ -6,9 +6,7 @@
 use cortex_m_rt::entry;
 use defmt_rtt as _;
 use pac25_hal as hal;
-use pac25_hal::scc::{
-    ClockSource, Config, HClockPrescaler, PllConfig, PllOutPrescaler, SystemClock,
-};
+use pac25_hal::scc::{ClockSource, Config, PllConfig, PllOutPrescaler, SystemClock};
 use panic_probe as _;
 
 use hal::pac;
@@ -23,7 +21,7 @@ fn main() -> ! {
     let mut led = gpiod.pd4.into_push_pull_output();
 
     // Set the system clock to 150MHz
-    let scc = dp.SCC.freeze(
+    let _scc = dp.SCC.freeze(
         Config::default()
             .frclk(ClockSource::RefClock)
             .sclk(SystemClock::PLLCLK)

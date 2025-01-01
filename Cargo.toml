@@ -50,4 +50,3 @@ panic-probe = "0.3.1"
 
 [[example]]
 name = "blinky"
-required-features = ["defmt"]
