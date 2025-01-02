@@ -1,6 +1,7 @@
 mod config;
 
 pub use config::*;
+use embedded_hal::spi::{ErrorKind, ErrorType, SpiBus};
 use pac25::pac25140::SSPA;
 
 use crate::scc::Scc;
@@ -55,22 +56,50 @@ pub struct Spi {
     reg: SSPA,
 }
 
-impl Spi {
-    /// Transmit one or more bytes.
-    pub fn transmit(&mut self, buf: &[u16]) {
-        for byte in buf {
+impl ErrorType for Spi {
+    type Error = ErrorKind;
+}
+
+impl SpiBus<u16> for Spi {
+    fn read(&mut self, words: &mut [u16]) -> Result<(), Self::Error> {
+        for byte in words {
+            // wait until RX FIFO has data
+            while self.reg.stat().read().rne().bit_is_clear() {}
+            // read word
+            *byte = self.reg.dat().read().bits() as u16;
+        }
+
+        Ok(())
+    }
+
+    fn write(&mut self, words: &[u16]) -> Result<(), Self::Error> {
+        for byte in words {
+            // wait until TX FIFO is not full
             while self.reg.stat().read().tnf().bit_is_clear() {}
+            // write word
             self.reg
                 .dat()
                 .modify(|_, w| unsafe { w.bits(*byte as u32) });
         }
+
+        Ok(())
     }
 
-    /// Receive data.
-    pub fn receive(&mut self, buf: &mut [u16]) {
-        for byte in buf {
-            while self.reg.stat().read().rne().bit_is_clear() {}
-            *byte = self.reg.dat().read().bits() as u16;
-        }
+    fn transfer(&mut self, read: &mut [u16], write: &[u16]) -> Result<(), Self::Error> {
+        self.write(write)?;
+        self.read(read)?;
+        Ok(())
+    }
+
+    fn transfer_in_place(&mut self, words: &mut [u16]) -> Result<(), Self::Error> {
+        self.write(words)?;
+        self.read(words)?;
+        Ok(())
+    }
+
+    fn flush(&mut self) -> Result<(), Self::Error> {
+        // wait until TX FIFO is empty
+        while self.reg.stat().read().tfe().bit_is_clear() {}
+        Ok(())
     }
 }
