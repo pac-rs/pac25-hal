@@ -1,10 +1,10 @@
 mod config;
 
 pub use config::*;
-use embedded_hal::spi::{ErrorKind, ErrorType, SpiBus};
-use pac25::pac25140::SSPA;
 
 use crate::scc::Scc;
+use embedded_hal::spi::{ErrorKind, ErrorType, SpiBus};
+use pac25::pac25140::SSPA;
 
 pub trait SspExt {
     fn spi(self, scc: &mut Scc, config: Config) -> Spi;
