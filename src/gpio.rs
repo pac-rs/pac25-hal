@@ -1,4 +1,4 @@
-use crate::hal::digital::v2::PinState;
+use crate::hal::digital::PinState;
 use core::fmt;
 use core::marker::PhantomData;
 mod convert;

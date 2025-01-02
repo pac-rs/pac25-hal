@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 defmt = { version = "0.3.5", optional = true }
-embedded-hal = { version = "0.2.7", features = ["unproven"] }
+embedded-hal = "1.0.0"
 fugit = "0.3.7"
 pac25 = { version = "0.1.2", features = ["pac25140"] }
 
@@ -42,7 +42,7 @@ gpiof = []
 gpiog = []
 
 # Optional extras
-defmt = ["dep:defmt", "fugit/defmt"]
+defmt = ["dep:defmt", "fugit/defmt", "embedded-hal/defmt-03"]
 
 [dev-dependencies]
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"] }
